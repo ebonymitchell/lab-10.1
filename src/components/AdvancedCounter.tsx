@@ -23,15 +23,14 @@ export default function AdvancedCounter() {
         return 0;
     });
 
-    // Begin history with the current count.
-    const [history, setHistory] = useState<number[]>([
-        count,
-    ]);
+    // Store the current count and its history together.
+    // This keeps both values synchronized during updates.
+    const [history, setHistory] = useState<number[]>([count]);
 
-    // Control how much the counter changes.
+    // Control how much the count changes.
     const [step, setStep] = useState<number>(1);
 
-    // Save the count after a short delay.
+    // Automatically save the count after a short delay.
     useEffect(() => {
         const timer = window.setTimeout(() => {
             try {
@@ -41,13 +40,57 @@ export default function AdvancedCounter() {
             }
         }, 300);
 
-        // Cancel an outdated save when count changes or component unmounts.
+        // Cancel outdated saves when count changes.
         return () => {
             window.clearTimeout(timer);
         };
     }, [count]);
 
-    // Update the count and record its new value.
+    // Listen for ArrowUp and ArrowDown keyboard events.
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            // Do not interfere with typing in form controls.
+            const target = event.target;
+
+            if (
+                target instanceof HTMLElement &&
+                (target.matches("input, textarea, select") ||
+                    target.isContentEditable)
+            ) {
+                return;
+            }
+
+            if (event.key === "ArrowUp") {
+                event.preventDefault();
+
+                setCount((previous) => previous + step);
+                setHistory((previous) => [
+                    ...previous,
+                    previous[previous.length - 1] + step,
+                ]);
+            }
+
+            if (event.key === "ArrowDown") {
+                event.preventDefault();
+
+                setCount((previous) => previous - step);
+                setHistory((previous) => [
+                    ...previous,
+                    previous[previous.length - 1] - step,
+                ]);
+            }
+        };
+
+        // Register the keyboard event listener.
+        window.addEventListener("keydown", handleKeyDown);
+
+        // Remove the previous listener when step changes or on unmount.
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [step]);
+
+    // Update the count and record the new value.
     const updateCount = (amount: number) => {
         const nextCount = count + amount;
 
@@ -92,7 +135,7 @@ export default function AdvancedCounter() {
                 />
             </div>
 
-            {/* Counter controls */}
+            {/* Counter buttons */}
             <div>
                 <button type="button" onClick={decrement}>
                     Decrement
@@ -103,10 +146,9 @@ export default function AdvancedCounter() {
                 </button>
             </div>
 
-            {/* Display the count history for this session. */}
+            {/* Display all count changes. */}
             <div>
                 <h3>Count History</h3>
-
                 <p>{history.join(", ")}</p>
             </div>
         </section>
