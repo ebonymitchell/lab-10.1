@@ -1,0 +1,148 @@
+/* Center the counter on the page. */
+#root {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+}
+
+/* Main counter card */
+section {
+    width: 100%;
+    max-width: 480px;
+    padding: 36px;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    box-shadow: 0 12px 35px rgba(15, 23, 42, 0.1);
+    text-align: center;
+}
+
+/* Application heading */
+section h1 {
+    margin: 0 0 28px;
+    color: #0f172a;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+/* Current count display */
+section h2 {
+    margin: 0 0 30px;
+    padding: 24px;
+    background-color: #eff6ff;
+    border-radius: 12px;
+    color: #2563eb;
+    font-size: 2rem;
+}
+
+/* Step input container */
+section>div {
+    margin-bottom: 24px;
+}
+
+/* Step input label */
+section label {
+    display: block;
+    margin-bottom: 10px;
+    color: #334155;
+    font-weight: 600;
+}
+
+/* Step number input */
+section input {
+    width: 120px;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #0f172a;
+    font-size: 1rem;
+    text-align: center;
+}
+
+/* Highlight the active input. */
+section input:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Counter buttons */
+section button {
+    margin: 4px;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 8px;
+    background-color: #2563eb;
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+/* Button hover effect */
+section button:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-2px);
+}
+
+/* Keyboard accessibility */
+section button:focus-visible {
+    outline: 3px solid #93c5fd;
+    outline-offset: 3px;
+}
+
+/* Reset button uses a different color. */
+section button:last-child {
+    background-color: #64748b;
+}
+
+section button:last-child:hover {
+    background-color: #475569;
+}
+
+/* Count history area */
+section>div:last-child {
+    margin-top: 30px;
+    margin-bottom: 0;
+    padding-top: 24px;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* History heading */
+section h3 {
+    margin: 0 0 12px;
+    color: #334155;
+    font-size: 1.1rem;
+}
+
+/* History values */
+section p {
+    margin: 0;
+    color: #64748b;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+/* Responsive layout for smaller screens */
+@media (max-width: 480px) {
+    section {
+        padding: 24px 18px;
+    }
+
+    section h1 {
+        font-size: 1.5rem;
+    }
+
+    section h2 {
+        font-size: 1.5rem;
+    }
+
+    section button {
+        width: 100%;
+        margin: 5px 0;
+    }
+}
