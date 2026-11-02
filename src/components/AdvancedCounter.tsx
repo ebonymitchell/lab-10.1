@@ -1,14 +1,17 @@
 import { useState } from "react";
 
-// Manage the current count and track its history.
+// Manage the counter, step value, and count history.
 export default function AdvancedCounter() {
     // Initialize the counter at zero.
     const [count, setCount] = useState<number>(0);
 
-    // Record the initial count and every subsequent count.
+    // Store every count value, starting with zero.
     const [history, setHistory] = useState<number[]>([0]);
 
-    // Update the count and record the new value.
+    // Control how much the count changes with each action.
+    const [step, setStep] = useState<number>(1);
+
+    // Update the count and record the new value in history.
     const updateCount = (amount: number) => {
         const nextCount = count + amount;
 
@@ -16,14 +19,14 @@ export default function AdvancedCounter() {
         setHistory((previous) => [...previous, nextCount]);
     };
 
-    // Increase the count by one.
+    // Increase the count by the selected step.
     const increment = () => {
-        updateCount(1);
+        updateCount(step);
     };
 
-    // Decrease the count by one.
+    // Decrease the count by the selected step.
     const decrement = () => {
-        updateCount(-1);
+        updateCount(-step);
     };
 
     return (
@@ -33,22 +36,43 @@ export default function AdvancedCounter() {
             {/* Display the current count. */}
             <h2>Current Count: {count}</h2>
 
-            {/* Counter controls */}
-            <button type="button" onClick={decrement}>
-                Decrement
-            </button>
+            {/* Allow the user to select a positive step value. */}
+            <div>
+                <label htmlFor="step">Step Value: </label>
 
-            <button type="button" onClick={increment}>
-                Increment
-            </button>
+                <input
+                    id="step"
+                    type="number"
+                    min="1"
+                    step="1"
+                    value={step}
+                    onChange={(event) => {
+                        const value = Number(event.target.value);
 
-            {/* Display all recorded count values. */}
+                        // Accept only positive whole numbers.
+                        if (Number.isInteger(value) && value >= 1) {
+                            setStep(value);
+                        }
+                    }}
+                />
+            </div>
+
+            {/* Counter controls use the selected step. */}
+            <div>
+                <button type="button" onClick={decrement}>
+                    Decrement
+                </button>
+
+                <button type="button" onClick={increment}>
+                    Increment
+                </button>
+            </div>
+
+            {/* Display the complete count history. */}
             <div>
                 <h3>Count History</h3>
 
-                <p>
-                    {history.join(", ")}
-                </p>
+                <p>{history.join(", ")}</p>
             </div>
         </section>
     );
