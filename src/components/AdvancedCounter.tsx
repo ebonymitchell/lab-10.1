@@ -1,17 +1,53 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-// Manage the counter, step value, and count history.
+// Key used to save the count in browser storage.
+const STORAGE_KEY = "advanced-counter-count";
+
 export default function AdvancedCounter() {
-    // Initialize the counter at zero.
-    const [count, setCount] = useState<number>(0);
+    // Restore the saved count or start at zero.
+    const [count, setCount] = useState<number>(() => {
+        try {
+            const savedCount = localStorage.getItem(STORAGE_KEY);
 
-    // Store every count value, starting with zero.
-    const [history, setHistory] = useState<number[]>([0]);
+            if (savedCount !== null) {
+                const parsedCount = Number(savedCount);
 
-    // Control how much the count changes with each action.
+                if (Number.isFinite(parsedCount)) {
+                    return parsedCount;
+                }
+            }
+        } catch (error) {
+            console.error("Unable to load saved count:", error);
+        }
+
+        return 0;
+    });
+
+    // Begin history with the current count.
+    const [history, setHistory] = useState<number[]>([
+        count,
+    ]);
+
+    // Control how much the counter changes.
     const [step, setStep] = useState<number>(1);
 
-    // Update the count and record the new value in history.
+    // Save the count after a short delay.
+    useEffect(() => {
+        const timer = window.setTimeout(() => {
+            try {
+                localStorage.setItem(STORAGE_KEY, String(count));
+            } catch (error) {
+                console.error("Unable to save count:", error);
+            }
+        }, 300);
+
+        // Cancel an outdated save when count changes or component unmounts.
+        return () => {
+            window.clearTimeout(timer);
+        };
+    }, [count]);
+
+    // Update the count and record its new value.
     const updateCount = (amount: number) => {
         const nextCount = count + amount;
 
@@ -36,7 +72,7 @@ export default function AdvancedCounter() {
             {/* Display the current count. */}
             <h2>Current Count: {count}</h2>
 
-            {/* Allow the user to select a positive step value. */}
+            {/* Select a positive whole-number step value. */}
             <div>
                 <label htmlFor="step">Step Value: </label>
 
@@ -49,7 +85,6 @@ export default function AdvancedCounter() {
                     onChange={(event) => {
                         const value = Number(event.target.value);
 
-                        // Accept only positive whole numbers.
                         if (Number.isInteger(value) && value >= 1) {
                             setStep(value);
                         }
@@ -57,7 +92,7 @@ export default function AdvancedCounter() {
                 />
             </div>
 
-            {/* Counter controls use the selected step. */}
+            {/* Counter controls */}
             <div>
                 <button type="button" onClick={decrement}>
                     Decrement
@@ -68,7 +103,7 @@ export default function AdvancedCounter() {
                 </button>
             </div>
 
-            {/* Display the complete count history. */}
+            {/* Display the count history for this session. */}
             <div>
                 <h3>Count History</h3>
 
